@@ -1,0 +1,32 @@
+services:
+  redis:
+    image: redis
+    container_name: vtm-redis
+    read_only: true
+    restart: on-failure:5
+    mem_limit: ${RD_MEM_LIMIT:-512m}
+    userns_mode: "private"
+    pids_limit: 512
+    ulimits:
+      nproc: 2048
+      nofile:
+        soft: 1024
+        hard: 2048
+    ports:
+      - 6379:6379
+    networks:
+      - redis-network
+    expose:
+      - 6379
+    volumes:
+      - ./redis/redis.conf:/etc/redis/redis.conf
+    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "127.0.0.1", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  redis-network:
+    driver: bridge
