@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/redis")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class RedisController {
     private final RedisService redisService;
 
     @PostMapping("/set")
-    public ResponseEntity<String> setValue(@RequestParam String key, @RequestParam String value) {
+    public ResponseEntity<String> setValue(
+            @RequestParam String key,
+            @RequestParam String value) {
         redisService.setValue(key, value);
         return ResponseEntity.ok("Saved to Redis");
     }
